@@ -1,0 +1,25 @@
+#version 330 core
+in vec2 fragCoord;
+out vec4 FragColor;
+
+uniform float lineWidth;
+uniform int screenWidth;
+uniform int screenHeight;
+uniform int cellSize;
+
+void main() {
+    float x = (fragCoord.x + 1.0) * 0.5 * screenWidth; // Transform from [-1, 1] to [0, screenWidth]
+    float y = (fragCoord.y + 1.0) * 0.5 * screenHeight; // Transform from [-1, 1] to [0, screenHeight]
+
+    float dx = float(cellSize);
+    float dy = float(cellSize);
+
+    float gridLineX = mod(x, dx);
+    float gridLineY = mod(y, dy);
+
+    if (gridLineX < lineWidth || gridLineY < lineWidth) {
+        FragColor = vec4(0.0, 0.0, 0.0, 1.0); // Black color for grid lines
+    } else {
+        FragColor = vec4(1.0, 1.0, 1.0, 0.0); // Transparent for background
+    }
+}
