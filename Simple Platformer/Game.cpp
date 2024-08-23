@@ -1,5 +1,7 @@
 #include "Game.h"
 
+// This class manages the creation and storage of entities and handles rendering based on tags or other criteria
+
 void Game::render(Shader shader)
 {
 
@@ -20,7 +22,7 @@ void Game::renderTempQuad(Shader shader)
     };
     unsigned int indices[] = {
         0, 1, 3, // first triangle
-        1, 2, 3  // second triangle
+        1, 2, 3  // second trianglem;
     };
     unsigned int VBO, VAO, EBO;
     glGenVertexArrays(1, &VAO);
@@ -79,4 +81,36 @@ void Game::renderTempQuad(Shader shader)
     glBindTexture(GL_TEXTURE_2D, texture1);
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+}
+
+void Game::init(GLFWwindow* window, Shader shader)
+{
+    // Load textures (pseudo code, you need actual OpenGL texture loading logic)
+    GLuint texture1 = loadTexture("texture1.png");
+    GLuint texture2 = loadTexture("texture2.png");
+
+    // Create entities with different sizes and textures
+    makeEntity(100.0f, 200.0f, "player", texture1);
+    makeEntity(150.0f, 150.0f, "enemy", texture2);
+}
+
+GLuint Game::loadTexture(const char* textureID)
+{
+    
+}
+
+void Game::makeEntity(float width, float height, const std::string& subtype, GLuint textureID)
+{
+    // Create an entity and add it to the list of entities
+    Entity newEntity(width, height, subtype, textureID);
+    entities.push_back(newEntity);
+}
+
+void Game::renderEntitiesByTag(const std::string& tag, GLuint shader)
+{
+    for (auto& entity : entities) {
+        if (entity.subtype == tag) {
+            entity.render(shader);
+        }
+    }
 }

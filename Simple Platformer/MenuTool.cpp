@@ -1,11 +1,42 @@
 #include "MenuTool.h"
 
-void MenuTool::displayGrid(GLFWwindow* window)
+// Toggles
+bool activated = false;
+bool menuToggle = false;
+
+void MenuTool::renderGrid(GLFWwindow* window)
 {
-    setupGrid(window, setupQuad());
+    createGrid(window, setupQuad());
 }
 
-void MenuTool::setupGrid(GLFWwindow* window, GLuint VAO)
+void MenuTool::hideGrid(GLFWwindow* window)
+{
+
+}
+
+bool MenuTool::activate()
+{
+    activated = true;
+    return true;
+}
+
+bool MenuTool::deactivate()
+{
+    activated = false;
+    return false;
+}
+
+bool MenuTool::check()
+{
+    if (activated == true) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+void MenuTool::createGrid(GLFWwindow* window, GLuint VAO)
 {
     gridShader.use();
 
@@ -19,6 +50,33 @@ void MenuTool::setupGrid(GLFWwindow* window, GLuint VAO)
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 
+}
+
+void MenuTool::handleInput(GLFWwindow* window)
+{
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS && !menuToggle) {
+        activated = !activated;  // Toggle the activated state
+        menuToggle = true;  // Mark that the key has been pressed
+
+        // Print messages based on the new activated state
+        if (activated) {
+            std::cout << "Debug mode has been activated\n";
+        }
+        else {
+            std::cout << "Debug mode has been deactivated\n";
+        }
+    }
+
+    // Once the key is released, reset menuToggle to allow future toggling
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_RELEASE) {
+        menuToggle = false;
+    }
+
+    // Debug controls
+    if (activated) {
+        renderGrid(window);
+
+    }
 }
 
 GLuint MenuTool::setupQuad()

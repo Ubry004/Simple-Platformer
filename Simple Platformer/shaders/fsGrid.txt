@@ -18,7 +18,7 @@ void main() {
     float gridLineY = mod(y, dy);
 
     if (gridLineX < lineWidth || gridLineY < lineWidth) {
-        FragColor = vec4(0.0, 0.0, 0.0, 1.0); // Black color for grid lines
+        FragColor = vec4(0.0, 0.0, 0.0, 0.5); // Black color for grid lines
     } else {
         FragColor = vec4(1.0, 1.0, 1.0, 0.0); // Transparent for background
     }

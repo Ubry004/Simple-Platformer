@@ -7,8 +7,18 @@
 #include "MenuTool.h"
 #include "Game.h"
 
+//TO-DO
+/*
+* 
+* Rendering entities
+* 
+* 
+* 
+*/
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window, MenuTool debug);
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 // WINDOW PROPERTIES
 const int SCR_WIDTH = 256;
@@ -32,6 +42,7 @@ int main() {
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetKeyCallback(window, key_callback);
 
     // Load GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -42,11 +53,14 @@ int main() {
     
     // Create shaders
     Shader shader("shaders/vs.txt", "shaders/fs.txt");
-
-    // Create MenuTool
-    MenuTool debug;
-    Game game;
     
+    // Create Debug State
+    MenuTool debug;
+
+    //Create Game State
+    Game game;
+    //game.init();
+
     //-------------------------------------------------------------------------------------------------
 
     // Render loop
@@ -58,7 +72,8 @@ int main() {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
         // render
-        game.renderTempQuad(shader);
+        //game.renderTempQuad(shader);
+        
         
         // input
         processInput(window, debug);
@@ -71,13 +86,42 @@ int main() {
 void processInput(GLFWwindow* window, MenuTool debug)
 {
     // Debug Controls
-    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
-        debug.displayGrid(window);
-    }
+    debug.handleInput(window);
+
+    // Menu Controls
+
+
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    // Empty for now
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    glViewport(0, 0, width, height);
+    float aspect_ratio = 1024.0f / 896.0f;
+    int wVP; 
+    int hVP; //default values
+
+    float requiredHVP = width * (1.0f / aspect_ratio);
+
+    if (requiredHVP > height) {
+        float requiredWVP = height * aspect_ratio;
+
+        if (requiredWVP > width) {
+            std::cout << "Error: Could not resize window while preserving aspect ratio\n";
+        }
+        else {
+            wVP = static_cast<int>(requiredWVP);
+            hVP = height;
+        }
+    }
+    else {
+        wVP = width;
+        hVP = static_cast<int>(requiredHVP);
+    }
+
+    glViewport(0, 0, wVP, hVP);
 }
 
